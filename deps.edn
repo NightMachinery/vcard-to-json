@@ -1,0 +1,15 @@
+{:paths ["src" "resources"]
+ :deps {org.clojure/clojure {:mvn/version "1.10.3"}
+        com.googlecode.ez-vcard/ez-vcard {:mvn/version "0.11.3"}}
+ :aliases
+ {:run-m {:main-opts ["-m" "NightMachinary.vcard-to-json"]}
+  :run-x {:ns-default NightMachinary.vcard-to-json
+          :exec-fn greet
+          :exec-args {:name "Clojure"}}
+  :build {:deps {io.github.seancorfield/build-clj
+                 {:git/tag "v0.4.0" :git/sha "54e39ae"}}
+          :ns-default build}
+  :test {:extra-paths ["test"]
+         :extra-deps {org.clojure/test.check {:mvn/version "1.1.0"}
+                      io.github.cognitect-labs/test-runner
+                      {:git/tag "v0.5.0" :git/sha "48c3c67"}}}}}
