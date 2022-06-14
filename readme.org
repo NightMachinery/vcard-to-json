@@ -1,0 +1,7 @@
+#+TITLE: vcard-to-json/readme
+
+* build
+#+begin_example zsh
+clj -T:build rebuild-uber
+#: outputs in ./target/
+#+end_example
