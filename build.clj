@@ -2,9 +2,9 @@
   (:refer-clojure :exclude [test])
   (:require [org.corfield.build :as bb]))
 
-(def lib 'net.clojars.NightMachinary/vcard-to-json)
+(def lib 'net.clojars.NightMachinery/vcard-to-json)
 (def version "0.1.0-SNAPSHOT")
-(def main 'NightMachinary.vcard-to-json)
+(def main 'NightMachinery.vcard-to-json)
 
 (defn test "Run the tests." [opts]
   (bb/run-tests opts))

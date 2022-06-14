@@ -1,6 +1,6 @@
-(ns NightMachinary.vcard-to-json-test
+(ns NightMachinery.vcard-to-json-test
   (:require [clojure.test :refer :all]
-            [NightMachinary.vcard-to-json :refer :all]))
+            [NightMachinery.vcard-to-json :refer :all]))
 
 (deftest a-test
   (testing "FIXME, I fail."

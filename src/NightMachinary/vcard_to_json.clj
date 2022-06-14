@@ -1,4 +1,4 @@
-(ns NightMachinary.vcard-to-json
+(ns NightMachinery.vcard-to-json
   (:gen-class)
   (:require [clojure.data.json :as json]))
 
