@@ -1,5 +1,6 @@
 (ns NightMachinary.vcard-to-json
-  (:gen-class))
+  (:gen-class)
+  (:require [clojure.data.json :as json]))
 
 (import (ezvcard Ezvcard VCard))
 
@@ -41,6 +42,21 @@ PRODID:-//Apple Inc.//macOS 11.2.1//EN
 N:یزدی;دکترشوریده;;;
 FN:دکترشوریده یزدی
 END:VCARD")
+(def vcard_str "BEGIN:VCARD
+VERSION:2.1
+N;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:;=D9=88=DB=8C=D8=AF=D8=A7=D8=A7;;;
+FN;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:=D9=88=DB=8C=D8=AF=D8=A7=D8=A7
+TEL;CELL:09155960163
+TEL;CELL:09155960163
+END:VCARD
+BEGIN:VCARD
+VERSION:2.1
+N;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:=D8=B1=D8=A7=D9=85=D8=B4=DB=8C=D9=86=DB=8C;=D8=B1=D8=A7=D9=86=D9=86=D8=AF=D9=87;;;
+FN;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:=20=D8=B1=D8=A7=D9=86=D9=86=D8=AF=D9=87=20=D8=B1=D8=A7=D9=85=D8=B4=DB=
+=8C=D9=86=DB=8C
+TEL;CELL:+989159747441
+END:VCARD
+")
 ;;;
 (defn greet
   "Callable entry point to the application."
@@ -55,23 +71,26 @@ END:VCARD")
           contacts (.all parsed)]
       (exfiltrate)
 
-      (for  [contact contacts
-             :let [ ;; _ (println (bean contact))
-                   structured-names (.getStructuredNames contact)
-                   telephone-numbers (seq (.getTelephoneNumbers contact))]]
+      (->
+       (for  [contact contacts
+              :let [ ;; _ (println (bean contact))
+                    structured-names (.getStructuredNames contact)
+                    telephone-numbers (seq (.getTelephoneNumbers contact))]]
 
-        {:names-formatted (map #(.getValue %1)
-                               (.getFormattedNames contact))
-         :names-given (map #(.getGiven %1)
-                           structured-names)
-         :names-family (map #(.getFamily %1)
+         {:names-formatted (map #(.getValue %1)
+                                (.getFormattedNames contact))
+          :names-given (map #(.getGiven %1)
                             structured-names)
-         :telephone-numbers (for [telephone-number telephone-numbers
-                                  :let [types
-                                        (seq (.getTypes telephone-number))]]
-                              {:types (map #(.getValue %1) types)
-                               :text (.getText telephone-number)
-                               })})
+          :names-family (map #(.getFamily %1)
+                             structured-names)
+          :telephone-numbers (for [telephone-number telephone-numbers
+                                   :let [types
+                                         (seq (.getTypes telephone-number))]]
+                               {:types (map #(.getValue %1) types)
+                                :text (.getText telephone-number)
+                                })})
+       (json/write-str)
+       (println))
       ;; @todo prune empty elements
 
       (comment
