@@ -5,6 +5,36 @@
 (import (ezvcard Ezvcard VCard))
 
 ;;;
+(defn remove-nils [m]
+  (let [f (fn [x]
+            (cond
+              (map? x)
+              (let [kvs (filter
+                         (fn [x]
+                           (let [v (second x)]
+                             (cond
+                               (or
+                                (nil? v)
+                                (empty? v)) false
+                               :else true)))
+                         x)]
+                (if (empty? kvs) nil (into {} kvs)))
+              (coll? x)
+              (do
+                ;; (println x)
+                (let [res (vec (filter (comp not nil?) x))]
+                  ;; (when (not (empty? res)) res)
+                  res
+                  ))
+              :else x))]
+    (clojure.walk/postwalk f m)))
+
+(comment
+  (remove-nils {"a" [1 2 nil 3] "b" [nil]})
+  (remove-nils {"a" "j"})
+  (map? {"a" [1 2 nil 3]})
+  (coll? "ha"))
+;;;
 (defmacro locals []
   (into {}
         (map (juxt name identity))
@@ -42,21 +72,21 @@ PRODID:-//Apple Inc.//macOS 11.2.1//EN
 N:یزدی;دکترشوریده;;;
 FN:دکترشوریده یزدی
 END:VCARD")
+
 (def vcard_str "BEGIN:VCARD
-VERSION:2.1
-N;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:;=D9=88=DB=8C=D8=AF=D8=A7=D8=A7;;;
-FN;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:=D9=88=DB=8C=D8=AF=D8=A7=D8=A7
-TEL;CELL:09155960163
-TEL;CELL:09155960163
-END:VCARD
-BEGIN:VCARD
-VERSION:2.1
-N;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:=D8=B1=D8=A7=D9=85=D8=B4=DB=8C=D9=86=DB=8C;=D8=B1=D8=A7=D9=86=D9=86=D8=AF=D9=87;;;
-FN;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:=20=D8=B1=D8=A7=D9=86=D9=86=D8=AF=D9=87=20=D8=B1=D8=A7=D9=85=D8=B4=DB=
-=8C=D9=86=DB=8C
-TEL;CELL:+989159747441
+VERSION:3.0
+PRODID:-//Apple Inc.//macOS 11.2.1//EN
+N:;MohammadReza Shams;;;
+FN:MohammadReza Shams
+TEL;type=CELL;type=VOICE;type=pref:+98 913 999 4697
+EMAIL;type=INTERNET;type=HOME;type=pref:fake_email@live.com
+item1.ADR;type=HOME;type=pref:;;خیابان کوشکی، پلاک ۳;;;;Iran
+item1.X-ABADR:ir
+NOTE:some notes here
+BDAY:1998-11-14
 END:VCARD
 ")
+
 ;;;
 (defn greet
   "Callable entry point to the application."
@@ -64,7 +94,7 @@ END:VCARD
   (println (str "Hello, " (or (:name data) "World") "!")))
 
 (defn -main
-  "I don't do a whole lot ... yet."
+  "Reads vcards from the stdin and converts them to JSON."
   [& args]
   (let [vcard_str (slurp *in*)]
     (let [parsed (. Ezvcard parse vcard_str)
@@ -75,8 +105,10 @@ END:VCARD
        (for  [contact contacts
               :let [ ;; _ (println (bean contact))
                     structured-names (.getStructuredNames contact)
-                    telephone-numbers (seq (.getTelephoneNumbers contact))]]
-
+                    telephone-numbers (seq (.getTelephoneNumbers contact))
+                    notes (.getNotes contact)]]
+         ;; https://www.evenx.com/vcard-3-0-format-specification
+         ;;;
          {:names-formatted (map #(.getValue %1)
                                 (.getFormattedNames contact))
           :names-given (map #(.getGiven %1)
@@ -88,14 +120,38 @@ END:VCARD
                                          (seq (.getTypes telephone-number))]]
                                {:types (map #(.getValue %1) types)
                                 :text (.getText telephone-number)
-                                })})
+                                })
+          :emails (for [email (.getEmails contact)
+                                   :let [types
+                                         (seq (.getTypes email))]]
+                               {:types (map #(.getValue %1) types)
+                                :value (.getValue email)
+                                })
+          :addresses (for [address (.getAddresses contact)
+                                   :let [types
+                                         (seq (.getTypes address))]]
+                               {:types (map #(.getValue %1) types)
+                                :countries (.getCountries address)
+                                :streetAddresses (.getStreetAddresses address)
+                                :extendedAddresses (.getExtendedAddresses address)
+                                :postalCodes (.getPostalCodes address)
+                                })
+          :birthdays (for [birthday (.getBirthdays contact)]
+                      (.getDate birthday))
+          :notes (map #(.getValue %1)
+                      notes)
+          })
+       (remove-nils)
        (json/write-str)
-       (println))
-      ;; @todo prune empty elements
+       (println)
+       )
 
       (comment
         (def c (nth contacts 0))
         (bean c)
+        (.getAddresses c)
+        (.getEmails c)
+        (.getDate (.getBirthday c))
         (def ts (seq (.getTelephoneNumbers c)))
         (def t (nth ts 0))
         (bean t)
