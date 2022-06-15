@@ -5,3 +5,55 @@
 clj -T:build rebuild-uber
 #: outputs in ./target/
 #+end_example
+
+** GraalVM
+#+begin_example zsh
+native-image --no-fallback --no-server -jar ./target/vcard-to-json-0.1.0-SNAPSHOT.jar
+#+end_example
+*** @broken
+:PROPERTIES:
+:visibility: folded
+:END:
+#+begin_example
+Exception in thread "main" java.lang.ExceptionInInitializerError
+	at ezvcard.util.TelUri.parse(TelUri.java:121)
+	at ezvcard.io.scribe.TelephoneScribe.parse(TelephoneScribe.java:181)
+	at ezvcard.io.scribe.TelephoneScribe._parseText(TelephoneScribe.java:101)
+	at ezvcard.io.scribe.TelephoneScribe._parseText(TelephoneScribe.java:48)
+	at ezvcard.io.scribe.VCardPropertyScribe.parseText(VCardPropertyScribe.java:216)
+	at ezvcard.io.text.VCardReader$VObjectDataListenerImpl.parseProperty(VCardReader.java:316)
+	at ezvcard.io.text.VCardReader$VObjectDataListenerImpl.onProperty(VCardReader.java:279)
+	at com.github.mangstadt.vinnie.io.VObjectReader.parse(VObjectReader.java:473)
+	at ezvcard.io.text.VCardReader._readNext(VCardReader.java:223)
+	at ezvcard.io.StreamReader.readNext(StreamReader.java:78)
+	at ezvcard.io.chain.ChainingParser.all(ChainingParser.java:152)
+	at ezvcard.io.chain.ChainingTextParser.all(ChainingTextParser.java:44)
+	at ezvcard.io.chain.ChainingTextStringParser.all(ChainingTextStringParser.java:57)
+	at NightMachinery.vcard_to_json$_main.invokeStatic(vcard_to_json.clj:101)
+	at NightMachinery.vcard_to_json$_main.doInvoke(vcard_to_json.clj:96)
+	at clojure.lang.RestFn.invoke(RestFn.java:397)
+	at clojure.lang.AFn.applyToHelper(AFn.java:152)
+	at clojure.lang.RestFn.applyTo(RestFn.java:132)
+	at NightMachinery.vcard_to_json.main(Unknown Source)
+Caused by: java.util.MissingResourceException: Can't find bundle for base name ezvcard/messages, locale en_US
+	at java.util.ResourceBundle.throwMissingResourceException(ResourceBundle.java:2045)
+	at java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1683)
+	at java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1586)
+	at java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1549)
+	at java.util.ResourceBundle.getBundle(ResourceBundle.java:858)
+	at ezvcard.Messages.<init>(Messages.java:42)
+	at ezvcard.Messages.<clinit>(Messages.java:37)
+	... 19 more
+#+end_example
+
+
+
+* issues
+** [[https://github.com/mangstadt/ez-vcard/issues/126][mangstadt/ez-vcard#126 {Q} How do I get the `RawProperty`s?]]
+
+* related
+** [[https://github.com/mangstadt/ez-vcard/wiki/jCard][jCard · mangstadt/ez-vcard Wiki · GitHub]]
+
+** [[https://github.com/mangstadt/ez-vcard/issues/78][mangstadt/ez-vcard#78 Write JSON-LD]]
+
+** [[https://github.com/mangstadt/ez-vcard/issues/77][mangstadt/ez-vcard#77 How to convert standard vCard into first-class JSON?]]

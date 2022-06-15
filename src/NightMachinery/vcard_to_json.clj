@@ -82,6 +82,8 @@ TEL;type=CELL;type=VOICE;type=pref:+98 913 999 4697
 EMAIL;type=INTERNET;type=HOME;type=pref:fake_email@live.com
 item1.ADR;type=HOME;type=pref:;;خیابان کوشکی، پلاک ۳;;;;Iran
 item1.X-ABADR:ir
+item2.X-ABRELATEDNAMES;type=pref:Peter Smith
+item2.X-ABLabel:_$!<Friend>!$_
 NOTE:some notes here
 BDAY:1998-11-14
 END:VCARD
@@ -149,6 +151,11 @@ END:VCARD
       (comment
         (def c (nth contacts 0))
         (bean c)
+        (filter
+         (fn [p]
+           (instance? p ezvcard.property.RawProperty))
+         (seq (.getProperties c)))
+        (.getRelations c)
         (.getAddresses c)
         (.getEmails c)
         (.getDate (.getBirthday c))
