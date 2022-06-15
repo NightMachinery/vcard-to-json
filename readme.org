@@ -6,7 +6,7 @@ clj -T:build rebuild-uber
 #: outputs in ./target/
 #+end_example
 
-** GraalVM :hidden:
+** GraalVM
 #+begin_example zsh
 native-image --no-fallback --no-server -jar ./target/vcard-to-json-0.1.0-SNAPSHOT.jar
 #+end_example
