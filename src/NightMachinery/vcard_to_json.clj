@@ -76,16 +76,16 @@ END:VCARD")
 (def vcard_str "BEGIN:VCARD
 VERSION:3.0
 PRODID:-//Apple Inc.//macOS 11.2.1//EN
-N:;MohammadReza Shams;;;
-FN:MohammadReza Shams
-TEL;type=CELL;type=VOICE;type=pref:+98 913 999 4697
+N:;Peter Black;;;
+FN:Peter Black
+TEL;type=CELL;type=VOICE;type=pref:+98 413 999 4697
 EMAIL;type=INTERNET;type=HOME;type=pref:fake_email@live.com
 item1.ADR;type=HOME;type=pref:;;خیابان کوشکی، پلاک ۳;;;;Iran
 item1.X-ABADR:ir
-item2.X-ABRELATEDNAMES;type=pref:Peter Smith
+item2.X-ABRELATEDNAMES;type=pref:Tatsuya Smith
 item2.X-ABLabel:_$!<Friend>!$_
 NOTE:some notes here
-BDAY:1998-11-14
+BDAY:1958-11-14
 END:VCARD
 ")
 

@@ -1,6 +1,12 @@
 #+TITLE: vcard-to-json/readme
 
+=vcard-to-json= converts vCard .VCF files into human-readable JSON. Reversibility of this transformation is not a goal.
+
+This program supports only a limited set of vCard properties. You can open issues to request specific properties added. Please attach an example vCard entity that uses the said properties.
+
 * build
+You have to have Clojure installed and =clj= in your path.
+
 #+begin_example zsh
 clj -T:build rebuild-uber
 #: outputs in ./target/
@@ -15,8 +21,82 @@ cat my_vcard |
 Or you can use it without building the uberjar:
 #+begin_example zsh
 cat my_vcard |
-  clj -X NightMachinery.vcard-to-json
+  clj -X NightMachinery.vcard-to-json/-main
 #+end_example
+
+** examples
+#+begin_src bsh.dash :results verbatim :exports both :wrap results
+echo  "BEGIN:VCARD
+VERSION:3.0
+PRODID:-//Apple Inc.//macOS 11.2.1//EN
+N:;Peter Black;;;
+FN:Peter Black
+TEL;type=CELL;type=VOICE;type=pref:+98 413 999 4697
+EMAIL;type=INTERNET;type=HOME;type=pref:fake_email@live.com
+item1.ADR;type=HOME;type=pref:;;The Dark Street;;;;Neverland
+item1.X-ABADR:ir
+item2.X-ABRELATEDNAMES;type=pref:Tatsuya Smith
+item2.X-ABLabel:_$!<Friend>!$_
+NOTE:some notes here
+BDAY:1958-11-14
+END:VCARD
+" | clj -X NightMachinery.vcard-to-json/-main |
+    jq . #: to prettify the output
+#+end_src
+
+#+RESULTS:
+#+begin_results json
+[
+  {
+    "names-formatted": [
+      "Peter Black"
+    ],
+    "names-given": [
+      "Peter Black"
+    ],
+    "telephone-numbers": [
+      {
+        "types": [
+          "cell",
+          "voice",
+          "pref"
+        ],
+        "text": "+98 413 999 4697"
+      }
+    ],
+    "emails": [
+      {
+        "types": [
+          "internet",
+          "home",
+          "pref"
+        ],
+        "value": "fake_email@live.com"
+      }
+    ],
+    "addresses": [
+      {
+        "types": [
+          "home",
+          "pref"
+        ],
+        "countries": [
+          "Neverland"
+        ],
+        "streetAddresses": [
+          "The Dark Street"
+        ]
+      }
+    ],
+    "birthdays": [
+      "1958-11-13T20:30:00Z"
+    ],
+    "notes": [
+      "some notes here"
+    ]
+  }
+]
+#+end_results
 
 * issues
 ** [[https://github.com/mangstadt/ez-vcard/issues/126][mangstadt/ez-vcard#126 {Q} How do I get the `RawProperty`s?]]
