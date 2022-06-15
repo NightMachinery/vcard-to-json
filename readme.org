@@ -1,4 +1,4 @@
-#+TITLE: vcard-to-json/readme
+#+TITLE: vcard-to-json
 
 =vcard-to-json= converts vCard .VCF files into human-readable JSON. Reversibility of this transformation is not a goal.
 
