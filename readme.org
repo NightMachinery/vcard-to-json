@@ -44,8 +44,7 @@ END:VCARD
     jq . #: to prettify the output
 #+end_src
 
-#+RESULTS:
-#+begin_results json
+#+begin_example json
 [
   {
     "names-formatted": [
@@ -96,7 +95,7 @@ END:VCARD
     ]
   }
 ]
-#+end_results
+#+end_example
 
 * issues
 ** [[https://github.com/mangstadt/ez-vcard/issues/126][mangstadt/ez-vcard#126 {Q} How do I get the `RawProperty`s?]]
