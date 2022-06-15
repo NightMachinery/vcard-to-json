@@ -6,7 +6,7 @@ clj -T:build rebuild-uber
 #: outputs in ./target/
 #+end_example
 
-** GraalVM
+** GraalVM :hidden:
 #+begin_example zsh
 native-image --no-fallback --no-server -jar ./target/vcard-to-json-0.1.0-SNAPSHOT.jar
 #+end_example
@@ -47,6 +47,17 @@ Caused by: java.util.MissingResourceException: Can't find bundle for base name e
 #+end_example
 
 
+* usage
+#+begin_example zsh
+cat my_vcard |
+  java -jar ./target/vcard-to-json*.jar
+#+end_example
+
+Or you can use it without building the uberjar:
+#+begin_example zsh
+cat my_vcard |
+  clj -X NightMachinery.vcard-to-json
+#+end_example
 
 * issues
 ** [[https://github.com/mangstadt/ez-vcard/issues/126][mangstadt/ez-vcard#126 {Q} How do I get the `RawProperty`s?]]
