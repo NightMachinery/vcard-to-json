@@ -101,6 +101,10 @@ item1.ADR;type=HOME;type=pref:;;خیابان کوشکی، پلاک ۳;;;;Iran
 item1.X-ABADR:ir
 item2.X-ABRELATEDNAMES;type=pref:Tatsuya Smith
 item2.X-ABLabel:_$!<Friend>!$_
+item3.URL:https://fake.blogspot.com/?m=1
+item3.X-ABLabel:_$!<HomePage>!$_
+item4.URL;type=pref:https://instagram.com/fake_id
+item4.X-ABLabel:Instagram
 NOTE:some notes here
 BDAY:1958-11-14
 END:VCARD
@@ -177,6 +181,11 @@ END:VCARD
                         :value (.getValue email)
                         })
 
+             :urls (for [url (.getUrls contact)]
+                     {:type (.getType url)
+                        :value (.getValue url)
+                        })
+
              :addresses (for [address (.getAddresses contact)
                               :let [types
                                     (seq (.getTypes address))]]
@@ -225,6 +234,7 @@ END:VCARD
                  (first (.getExtendedProperties c))))
         (.getGroup (first (.getExtendedProperties c)))
         (.getRelations c)
+        (.getType (nth (seq (.getUrls c)) 1))
         (.getAddresses c)
         (.getEmails c)
         (.getDate (.getBirthday c))
