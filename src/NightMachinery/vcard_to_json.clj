@@ -20,7 +20,11 @@
                                 (cond
                                   (or
                                    (nil? v)
-                                   (and (coll? v) (empty? v))) false
+                                   (and
+                                    (or (coll? v)
+                                        (seqable? v))
+                                    (empty? v)
+                                    )) false
                                   :else true)))
                             x)]
                    (do
@@ -40,7 +44,7 @@
      (filter some?))))
 
 (comment
-  (remove-nils [{"a" [1 2 nil 3] "b" [nil nil] "c" [] "d" 9}])
+  (remove-nils [{"a" [1 2 nil 3] "b" {"_" [nil nil] "hi" 2} "c" [] "d" 9}])
 
   (clojure.walk/postwalk #(do (println % 1) % 1)
                          {"a" nil
