@@ -98,7 +98,6 @@ END:VCARD
 #+end_example
 
 * issues
-** [[https://github.com/mangstadt/ez-vcard/issues/126][mangstadt/ez-vcard#126 {Q} How do I get the `RawProperty`s?]]
 
 * related
 ** [[https://github.com/mangstadt/ez-vcard/wiki/jCard][jCard · mangstadt/ez-vcard Wiki · GitHub]]
